@@ -7,7 +7,7 @@ from networkx.algorithms import tree, boundary
 import matplotlib.pyplot as plt
 from functools import reduce
 from networkx.readwrite import json_graph
-import argparse
+from chosenMinorities import minority
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -48,6 +48,11 @@ class GerrymanderingMCMC():
             g.nodes[node_label]["population"] = node_data[node_label]["population"]
             g.nodes[node_label]["voting_history"] = node_data[node_label]["voting_history"]
             g.nodes[node_label]["district"] = node_data[node_label]["district"]
+            # The following is commented out because we don't have the data and the decided minorities
+            '''
+            g.nodes[node-label][minority.AM] = node_data[node_label][minority.AM]
+            ...
+            '''
             self.all_districts.add(node_data[node_label]["district"])
         fname = "output/original"
         with open(fname, 'w') as file:
@@ -336,3 +341,5 @@ class GerrymanderingMCMC():
         self.__record_key_stats(graph)
 
         print("DONE Finding alternative district plans") if self.verbose else None
+
+    def boxWhisker(self, ):
