@@ -20,13 +20,14 @@ class GerrymanderingMCMC:
         against a given potential plan, and use the alternatives to see how much of an outlier the proposed plan is.
     """
 
-    def __init__(self, districtCount, graph_file, cooling_period=50, rounds=50, verbose=False):
+    def __init__(self, district_count, graph_file, cooling_period=50, rounds=50, verbose=False):
         # We initialize all_districts here, but we really establish it when we read our graph in
         self.all_districts = set()
         self.g = self.read_graph(graph_file)
         self.cooling_period = cooling_period
         self.verbose = verbose
-        self.bwp = BWP(districtCount)
+        self.district_count = district_count
+        self.bwp = BWP(district_count)
         self.district_colors = {
             "A": "red",
             "B": "green",
@@ -356,6 +357,14 @@ class GerrymanderingMCMC:
 
     def perform_calculations(self, graph):
         self.box_whisker_plot(graph)
+        return
 
     def box_whisker_plot(self, graph):
-        return
+        i = 0
+        for k, v in self.district_colors.items():
+
+            if i == self.district_count:
+                break
+            precinct_nodes = self.__get_district_nodes(graph, k)
+
+
