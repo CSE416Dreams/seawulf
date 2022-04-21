@@ -33,6 +33,7 @@ class GerrymanderingMCMC:
             "B": "green",
             "C": "yellow",
             "D": "blue"
+            # Need to add more colors for other districts
         }
         self.data = []
         self.original_data = {}
@@ -362,9 +363,8 @@ class GerrymanderingMCMC:
     def box_whisker_plot(self, graph):
         i = 0
         for k, v in self.district_colors.items():
-
             if i == self.district_count:
                 break
             precinct_nodes = self.__get_district_nodes(graph, k)
-
+            i += 1
 

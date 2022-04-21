@@ -1,8 +1,9 @@
 from csv import DictReader
 import json
+import operator
 
-csvPath = './shp files/ms_2020/ms_2020.csv'
-adjPath = './shp files/ms_2020/adjList.txt'
+csvPath = './shp files/ga_2020/ga_2020.csv'
+adjPath = './shp files/ga_2020/adjList.txt'
 csv = 0
 adj = 0
 seawulfInput = {}
@@ -18,14 +19,16 @@ with open(csvPath, 'r') as file:
         seawulfInput[i + 1] = {}
         # The following adds the adjacenct Nodes
         adjText = adj[i].strip()
-        adjNodes = adjText[2:len(adjText) - 1].split(', ')
+        adjNodes = ""
+        if adjText != "c()":
+            adjNodes = adjText[2:len(adjText) - 1].split(', ')
         seawulfInput[i + 1]["adjacent_nodes"] = adjNodes
         candidateVotes = {}
         for candidate, votes in row.items():
             if candidate.startswith("G20PRE"):
                 candidateVotes[candidate] = int(votes)
         population = sum(candidateVotes.values())
-        winningCandidate = max(candidateVotes)
+        winningCandidate = max(candidateVotes.items(), key=operator.itemgetter(1))[0]
         votingHistory = ""
         if winningCandidate == "G20PRERTRU":
             votingHistory = "R"
@@ -39,5 +42,5 @@ with open(csvPath, 'r') as file:
         i += 1
     file.close()
 
-with open('./shp files/ms_2020/ms-seawulf.json', 'w') as f:
+with open('./shp files/ga_2020/ga-seawulf.json', 'w') as f:
     json.dump(seawulfInput, f)
