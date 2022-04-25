@@ -11,6 +11,7 @@ from networkx.readwrite import json_graph
 from chosenMinorities import Minority
 from boxWhiskerPlot import BWP
 from mpi4py import MPI
+from mmDistrict import MMD
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -29,7 +30,8 @@ class GerrymanderingMCMC:
         self.cooling_period = cooling_period
         self.verbose = verbose
         self.district_count = district_count
-        self.bwp = BWP(district_count)
+        self.bwp = BWP(self.all_districts)
+        self.mmd = MMD()
         self.district_colors = {
             "A": "red",
             "B": "green",
@@ -357,14 +359,21 @@ class GerrymanderingMCMC:
                     file.write(json.dumps(json_graph.adjacency_data(graph)))
             '''
             # Added code
-            self.perform_calculations(graph)
+            self.perform_calculations(graph, i)
+            # Save results after every 1000 graphs generated
+            save_after = 1000
+            if (i + 1) % save_after:
+                self.bwp.calculate_and_save((i + 1) % save_after)
+        # MPI.finalize
 
         self.__record_key_stats(graph)
 
         print("DONE Finding alternative district plans") if self.verbose else None
 
-    def perform_calculations(self, graph):
+    def perform_calculations(self, graph, i):
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
+        mmDistricts = {}
+        isMMDistrict = False
         for district in self.all_districts:
             african_count = asian_count = 0
             rep_count = dem_count = 0
@@ -378,10 +387,20 @@ class GerrymanderingMCMC:
                 asian_count += precinct[Minority.AS]
                 rep_count += precinct[Minority.RE]
                 dem_count += precinct[Minority.DE]
+
+            # MM Districts
+            if african_count + asian_count < white_count:
+                mmDistricts[district] = True
+
+            # Box and Whisker
             bisect.insort(map_demographics[Minority.AM], african_count)
             bisect.insort(map_demographics[Minority.AS], asian_count)
             bisect.insort(map_demographics[Minority.RE], rep_count)
             bisect.insort(map_demographics[Minority.DE], dem_count)
+
+        # MM District
+        self.mmd.append(i, mmDistricts)
+
         # Append values to the box and whisker plot ds
         for race, values in map_demographics.items():
             self.bwp.append(race, values)
