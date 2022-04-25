@@ -1,10 +1,12 @@
 from enum import StrEnum
 
 
-class minority(StrEnum):
+class Minority(StrEnum):
     # More to add
-    AM = "african american",
-    AS = "asian american",
+    AM = "african_american",
+    AS = "asian_american",
     HI = "hispanic",
-    ME = "middle eastern",
+    ME = "middle_eastern",
     IT = "italian"
+    DE = "democratic"
+    RE = "republican"

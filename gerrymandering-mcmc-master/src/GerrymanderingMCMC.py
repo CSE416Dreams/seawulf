@@ -1,3 +1,4 @@
+import bisect
 from pathlib import Path
 import json
 import math
@@ -7,8 +8,9 @@ from networkx.algorithms import tree, boundary
 import matplotlib.pyplot as plt
 from functools import reduce
 from networkx.readwrite import json_graph
-from chosenMinorities import minority
+from chosenMinorities import Minority
 from boxWhiskerPlot import BWP
+from mpi4py import MPI
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -56,7 +58,7 @@ class GerrymanderingMCMC:
             g.nodes[node_label]["district"] = node_data[node_label]["district"]
             # The following is commented out because we don't have the data and the decided minorities
             '''
-            g.nodes[node-label][minority.AM] = node_data[node_label][minority.AM]
+            g.nodes[node-label][Minority.AM] = node_data[node_label][Minority.AM]
             ...
             '''
             self.all_districts.add(node_data[node_label]["district"])
@@ -337,6 +339,11 @@ class GerrymanderingMCMC:
             print("Randomizing the seed plan", i) if i % 25 == 0 and self.verbose else None
             self.recombination_of_districts(i)
 
+        '''
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+        size = comm.Get_size()
+        '''
         # Run `rounds`-many recombinations to build a distribution of a few key stats
         for i in range(0, rounds):
             print("Finding recomb ... ", i) if i % 20 == 0 and self.verbose else None
@@ -350,21 +357,31 @@ class GerrymanderingMCMC:
                     file.write(json.dumps(json_graph.adjacency_data(graph)))
             '''
             # Added code
-            self.perform_Calculations(graph)
+            self.perform_calculations(graph)
 
         self.__record_key_stats(graph)
 
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph):
-        self.box_whisker_plot(graph)
-        return
-
-    def box_whisker_plot(self, graph):
-        i = 0
-        for k, v in self.district_colors.items():
-            if i == self.district_count:
-                break
-            precinct_nodes = self.__get_district_nodes(graph, k)
-            i += 1
-
+        map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
+        for district in self.all_districts:
+            african_count = asian_count = 0
+            rep_count = dem_count = 0
+            white_count = 0
+            precinct_nodes = self.__get_district_nodes(graph, district)
+            # Each Node is a dict
+            # so node["population"] etc.
+            for precinct in precinct_nodes:
+                # Get the population
+                african_count += precinct[Minority.AM]
+                asian_count += precinct[Minority.AS]
+                rep_count += precinct[Minority.RE]
+                dem_count += precinct[Minority.DE]
+            bisect.insort(map_demographics[Minority.AM], african_count)
+            bisect.insort(map_demographics[Minority.AS], asian_count)
+            bisect.insort(map_demographics[Minority.RE], rep_count)
+            bisect.insort(map_demographics[Minority.DE], dem_count)
+        # Append values to the box and whisker plot ds
+        for race, values in map_demographics.items():
+            self.bwp.append(race, values)
