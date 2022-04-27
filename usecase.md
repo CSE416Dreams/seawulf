@@ -8,7 +8,9 @@ SeaWulf file system.
 
 # SeaWulf-2. Run MGGG Recom algorithm on the SeaWulf (required) (AD) *BY END OF WEEK*
 
-Set the constants in the MGGG code to define the properties (e.g., constraints) of the run. Any run-control information should be packaged in a SeaWulf acceptable format (e.g., script commands) and executed on the SeaWulf. Your activity diagram should demonstrate that you understand how the MGGG algorithm operates.
+Set the constants in the MGGG code to define the properties (e.g., constraints) of the run. Any run-control 
+information should be packaged in a SeaWulf acceptable format (e.g., script commands) and executed on 
+the SeaWulf. Your activity diagram should demonstrate that you understand how the MGGG algorithm operates.
 
 # SeaWulf-3. Coordinate/aggregate SeaWulf core generated data (required) (AD) *AFTER MEETING PROF*
 

@@ -14,7 +14,7 @@ class RepDemSplits:
         else:
             winner = "D"
 
-        self.plan[plan][district] = {"r": rep, "d": dem, "win": winner}
+        self.root[plan][district] = {"r": rep, "d": dem, "win": winner}
 
     def save(self, iterations, state):
         start = iterations - 1000

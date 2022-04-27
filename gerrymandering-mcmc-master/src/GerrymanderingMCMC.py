@@ -347,23 +347,22 @@ class GerrymanderingMCMC:
             print("Randomizing the seed plan", i) if i % 25 == 0 and self.verbose else None
             self.recombination_of_districts(i)
 
-        '''
+
         comm = MPI.COMM_WORLD
         rank = comm.Get_rank()
         size = comm.Get_size()
-        '''
+
+        a = 1
+        perrank = rounds//size
+        arr = []
+
+        comm.Barrier()
+
         # Run `rounds`-many recombinations to build a distribution of a few key stats
-        for i in range(0, rounds):
+        for i in range(a + rank*perrank, a + (rank+1)*perrank):
             print("Finding recomb ... ", i) if i % 20 == 0 and self.verbose else None
             graph = self.recombination_of_districts(i)
 
-            ''' The Following is the original code
-            if i == rounds-1:
-                fname = "output/recombination_of_districts"
-                self.__drawGraph(graph, fname)
-                with open(fname, 'w') as file:
-                    file.write(json.dumps(json_graph.adjacency_data(graph)))
-            '''
             # Added code
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
