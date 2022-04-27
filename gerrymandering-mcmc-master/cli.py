@@ -9,7 +9,6 @@ def main():
     parser.add_argument("-c", "--cooling_period", type=int, default=50, help="The number of plans you'd like to generate _before_ counting them towards your ensemble; defaults to 50")
     parser.add_argument("-r", "--rounds", type=int, default=200, help="The number of plans you'd like to generate and include in your ensemble; defaults to 200")
     parser.add_argument("-v", "--verbose", action="store_true", help="Include this flag if you'd like real-time output to the console")
-    parser.add_argument("-n", "--districts", type=int, default=4, help="The numbers of districts for the given state")
     parser.add_argument("-s", "--state", type=int, default=4, help="The State for the given plan")
     args = parser.parse_args()
 
@@ -17,17 +16,22 @@ def main():
     cooling_period = args.cooling_period
     rounds = args.rounds
     verbose = args.verbose
-    districts = args.districts
     state = args.state
 
     # Build the gerrymandering MCMC using the variables you've been provided
-    mcmc = GerrymanderingMCMC(state, districts, graph_file, cooling_period=cooling_period, verbose=verbose)
-
+    mcmc = GerrymanderingMCMC("ga", graph_file, cooling_period=cooling_period, verbose=verbose)
     # Generate alternative plans
     mcmc.generate_alternative_plans(rounds)
 
-    # Plot the data for the results of the recombinations
-    # mcmc.plot_data()
+    # Build the gerrymandering MCMC using the variables you've been provided
+    mcmc = GerrymanderingMCMC("fl", graph_file, cooling_period=cooling_period, verbose=verbose)
+    # Generate alternative plans
+    mcmc.generate_alternative_plans(rounds)
+
+    # Build the gerrymandering MCMC using the variables you've been provided
+    mcmc = GerrymanderingMCMC("ms", graph_file, cooling_period=cooling_period, verbose=verbose)
+    # Generate alternative plans
+    mcmc.generate_alternative_plans(rounds)
 
     # Save the data
 if __name__ == "__main__":

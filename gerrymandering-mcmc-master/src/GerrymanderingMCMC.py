@@ -14,8 +14,7 @@ from chosenMinorities import Minority
 from boxWhiskerPlot import BWP
 from repdemSplits import RepDemSplits
 from mmDistrict import MMD
-
-from mpi4py import MPI
+import multiprocessing
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -27,16 +26,15 @@ class GerrymanderingMCMC:
         against a given potential plan, and use the alternatives to see how much of an outlier the proposed plan is.
     """
 
-    def __init__(self, state, district_count, graph_file, cooling_period=50, rounds=50, verbose=False):
+    def __init__(self, state, graph_file, cooling_period=50, rounds=50, verbose=False):
         # We initialize all_districts here, but we really establish it when we read our graph in
         self.all_districts = set()
         self.g = self.read_graph(graph_file)
         self.cooling_period = cooling_period
         self.verbose = verbose
-        self.district_count = district_count
         self.bwp = BWP(self.all_districts)
-        self.mmd = MMD()
-        self.rds = RepDemSplits()
+        self.mmd = MMD(self.all_districts)
+        self.rds = RepDemSplits(self.all_districts)
         self.state = state
         self.district_colors = {
             "A": "red",
@@ -347,19 +345,8 @@ class GerrymanderingMCMC:
             print("Randomizing the seed plan", i) if i % 25 == 0 and self.verbose else None
             self.recombination_of_districts(i)
 
-
-        comm = MPI.COMM_WORLD
-        rank = comm.Get_rank()
-        size = comm.Get_size()
-
-        a = 1
-        perrank = rounds//size
-        arr = []
-
-        comm.Barrier()
-
         # Run `rounds`-many recombinations to build a distribution of a few key stats
-        for i in range(a + rank*perrank, a + (rank+1)*perrank):
+        for i in range(rounds):
             print("Finding recomb ... ", i) if i % 20 == 0 and self.verbose else None
             graph = self.recombination_of_districts(i)
 
@@ -372,7 +359,6 @@ class GerrymanderingMCMC:
                 self.bwp.calculate_and_save(iterations, self.state)
                 self.rds.save(iterations, self.state)
                 self.mmd.save(iterations, self.state)
-        # MPI.finalize
 
         self.__record_key_stats(graph)
 
@@ -404,7 +390,7 @@ class GerrymanderingMCMC:
 
             # MM Districts
             if african_count + asian_count > white_count:
-                mm_districts[district] = (african_count + asian_count) / (african_count + asian_count + white_count)
+                mm_districts[district] = 100 * (african_count + asian_count) / (african_count + asian_count + white_count)
             else:
                 mm_districts[district] = 0
 

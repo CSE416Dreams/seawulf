@@ -1,9 +1,12 @@
 import json
 
 
+seats = {"ms": 4, "ga": 14, "fl": 28}
+
 class RepDemSplits:
-    def __init__(self):
+    def __init__(self, state):
         self.root = {}
+        self.state = state
 
     def append(self, plan, district, rep, dem):
         if not self.root[plan]:
@@ -16,10 +19,20 @@ class RepDemSplits:
 
         self.root[plan][district] = {"r": rep, "d": dem, "win": winner}
 
-    def save(self, iterations, state):
+    def seat_splits(self):
+        return
+
+    def seat_vote_curve(self):
+        return
+
+    def summary(self):
+        # Avg of how many seats a party wins in a plan
+        return
+
+    def save(self, iterations):
         start = iterations - 1000
         for i in range(start, iterations):
-            file_path = f"./{state}/repdemSlpit-{i}.json"
+            file_path = f"./{self.state}/repdemSlpit-{i}.json"
             with open(file_path, 'w') as file:
                 json.dump(self.root[i], file)
             file.close()

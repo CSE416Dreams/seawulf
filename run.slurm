@@ -11,4 +11,4 @@ module load anaconda/3
 conda create -n sea_env
 conda install reqs
 
-mpirun -np <process across all nodes> python cli.py -c 50 -g <graph file> -r 10000 -n <numm of districts>
+mpirun -np <process across all nodes> python cli.py
