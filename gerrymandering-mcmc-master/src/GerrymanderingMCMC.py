@@ -8,10 +8,14 @@ from networkx.algorithms import tree, boundary
 import matplotlib.pyplot as plt
 from functools import reduce
 from networkx.readwrite import json_graph
+
+# My classes
 from chosenMinorities import Minority
 from boxWhiskerPlot import BWP
-from mpi4py import MPI
+from repdemSplits import RepDemSplits
 from mmDistrict import MMD
+
+from mpi4py import MPI
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -23,7 +27,7 @@ class GerrymanderingMCMC:
         against a given potential plan, and use the alternatives to see how much of an outlier the proposed plan is.
     """
 
-    def __init__(self, district_count, graph_file, cooling_period=50, rounds=50, verbose=False):
+    def __init__(self, state, district_count, graph_file, cooling_period=50, rounds=50, verbose=False):
         # We initialize all_districts here, but we really establish it when we read our graph in
         self.all_districts = set()
         self.g = self.read_graph(graph_file)
@@ -32,6 +36,8 @@ class GerrymanderingMCMC:
         self.district_count = district_count
         self.bwp = BWP(self.all_districts)
         self.mmd = MMD()
+        self.rds = RepDemSplits()
+        self.state = state
         self.district_colors = {
             "A": "red",
             "B": "green",
@@ -363,7 +369,10 @@ class GerrymanderingMCMC:
             # Save results after every 1000 graphs generated
             save_after = 1000
             if (i + 1) % save_after:
-                self.bwp.calculate_and_save((i + 1) % save_after)
+                iterations = (i + 1) % save_after
+                self.bwp.calculate_and_save(iterations, self.state)
+                self.rds.save(iterations, self.state)
+                self.mmd.save(iterations, self.state)
         # MPI.finalize
 
         self.__record_key_stats(graph)
@@ -371,9 +380,12 @@ class GerrymanderingMCMC:
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph, i):
+        # Save the graph 
+        path_to_save = f"{state}/graphs/{i}.json"
+        json.dump(path_to_save, graph["nodes"])
+
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
-        mmDistricts = {}
-        isMMDistrict = False
+        mm_districts = {}
         for district in self.all_districts:
             african_count = asian_count = 0
             rep_count = dem_count = 0
@@ -388,9 +400,12 @@ class GerrymanderingMCMC:
                 rep_count += precinct[Minority.RE]
                 dem_count += precinct[Minority.DE]
 
+            # Republican Democratic Splits
+            self.rds.append(i, district, rep_count, dem_count)
+
             # MM Districts
-            if african_count + asian_count < white_count:
-                mmDistricts[district] = True
+            if african_count + asian_count > white_count:
+                mm_districts[district] = True
 
             # Box and Whisker
             bisect.insort(map_demographics[Minority.AM], african_count)
@@ -399,7 +414,7 @@ class GerrymanderingMCMC:
             bisect.insort(map_demographics[Minority.DE], dem_count)
 
         # MM District
-        self.mmd.append(i, mmDistricts)
+        self.mmd.append(i, mm_districts)
 
         # Append values to the box and whisker plot ds
         for race, values in map_demographics.items():

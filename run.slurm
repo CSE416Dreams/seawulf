@@ -8,6 +8,7 @@
 #SBATCH --output=<file for logs>
 
 module load anaconda/3
-module load openmpi/4.0.5
+conda create -n sea
+conda install reqs
 
 mpirun -np <process across all nodes> python cli.py -c 50 -g <graph file> -r 10000 -n <numm of districts>
