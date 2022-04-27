@@ -1,5 +1,4 @@
 from chosenMinorities import Minority
-import bisect
 import json
 import numpy as np
 
@@ -14,7 +13,8 @@ class BWP:
 
     def append(self, minority, percentages):
         for i in range(percentages):
-            bisect.insort(self.root[minority][i], percentages[i])
+            # bisect.insort(self.root[minority][i], percentages[i])
+            self.root[minority][i].append(percentages[i])
 
     def calculate_and_save(self, i, state):
         for minority in self.root:
