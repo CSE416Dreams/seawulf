@@ -381,7 +381,7 @@ class GerrymanderingMCMC:
 
     def perform_calculations(self, graph, i):
         # Save the graph 
-        path_to_save = f"{state}/graphs/{i}.json"
+        path_to_save = f"{self.state}/graphs/{i}.json"
         json.dump(path_to_save, graph["nodes"])
 
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
@@ -405,7 +405,9 @@ class GerrymanderingMCMC:
 
             # MM Districts
             if african_count + asian_count > white_count:
-                mm_districts[district] = True
+                mm_districts[district] = (african_count + asian_count) / (african_count + asian_count + white_count)
+            else:
+                mm_districts[district] = 0
 
             # Box and Whisker
             bisect.insort(map_demographics[Minority.AM], african_count)

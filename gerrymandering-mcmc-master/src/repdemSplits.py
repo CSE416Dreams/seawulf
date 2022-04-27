@@ -14,12 +14,12 @@ class RepDemSplits:
         else:
             winner = "D"
 
-        self.plan[plan][district] = {"r": rep, "d": dem, "win": win}
+        self.plan[plan][district] = {"r": rep, "d": dem, "win": winner}
 
     def save(self, iterations, state):
         start = iterations - 1000
-        file_path = f"./{state}/repdemSlpit-{i}.json"
         for i in range(start, iterations):
+            file_path = f"./{state}/repdemSlpit-{i}.json"
             with open(file_path, 'w') as file:
                 json.dump(self.root[i], file)
             file.close()
