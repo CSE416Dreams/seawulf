@@ -27,4 +27,5 @@ class MMD:
             for district in mmd:
                 if mmd[district]:
                     count += 1
+        # Avg of how many districts are mm
         avg = count / 10000

@@ -1,4 +1,4 @@
-# - SeaWulf-1. Server dispatcher (required) *AFTER MEETING TA*
+# - SeaWulf-1. Server dispatcher (required) *AFTER MEETING PROF*
 
 Establish a protected directory on the SeaWulf to store your team’s data. Pre-stage any data
 that might be used repeatedly for SeaWulf runs. Prior to submitting a batch districting run
@@ -10,7 +10,7 @@ SeaWulf file system.
 
 Set the constants in the MGGG code to define the properties (e.g., constraints) of the run. Any run-control information should be packaged in a SeaWulf acceptable format (e.g., script commands) and executed on the SeaWulf. Your activity diagram should demonstrate that you understand how the MGGG algorithm operates.
 
-# SeaWulf-3. Coordinate/aggregate SeaWulf core generated data (required) (AD) *AFTER MEETING TA*
+# SeaWulf-3. Coordinate/aggregate SeaWulf core generated data (required) (AD) *AFTER MEETING PROF*
 
 You will run the algorithm on multiple nodes with each node having multiple cores. Each of the
 cores will generate one or more random district plans, and store a concise version of those
@@ -36,7 +36,7 @@ Using a modified Gelman/King approach, calculate data for the seat/vote curve.
 
 # SeaWulf-9. Generate summary data from individual seat/vote district plan data (required) (AD)  *ASK GROUP*
 
-# SeaWulf-10. Generate Republican/Democratic seat splits data (required) (AD) TODAY LATEST TOMORROW
+# SeaWulf-10. Generate Republican/Democratic seat splits data (required) (AD) TODAY
 WILL USE SEAWULF USE CASE 7
 
 # SeaWulf-11. Generate Majority-Minority district summary data (required) (AD) *TODAY*
