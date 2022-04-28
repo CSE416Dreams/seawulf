@@ -20,7 +20,15 @@ class RepDemSplits:
         self.root[plan][district] = {"r": rep, "d": dem, "win": winner}
 
     def seat_splits(self):
-        return
+        for index, plan in self.root.items():
+            rcount = dcount = 0
+            for district, split in plan.items():
+                if split["win"] == "r":
+                    rcount += 1
+                else:
+                    dcount += 1
+            self.root[index]["r_seats"] = rcount
+            self.root[index]["d_seats"] = dcount
 
     def seat_vote_curve(self):
         return
