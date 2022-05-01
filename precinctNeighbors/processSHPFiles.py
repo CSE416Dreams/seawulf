@@ -12,6 +12,8 @@ with open(adjPath) as file:
     adj = json.load(file)
     file.close()
 
+districts = [1, 2, 3, 4, 5, 6, 7 , 8, 9, 10, 11, 12, 13, 14]
+
 with open(csvPath, 'r') as file:
     csv = DictReader(file)
     i = 0
@@ -35,6 +37,7 @@ with open(csvPath, 'r') as file:
         seawulfInput[i+1]["other"]  = int(row["OTHERVAP"]) + int(row["NHPIVAP"]) + int(row["2MOREVAP"])
         pop = int(row["BVAP"]) + int(row["WVAP"]) + int(row["ASIANVAP"]) + int(row["HVAP"]) + seawulfInput[i+1]["other"]
         seawulfInput[i+1]["population"] = pop
+        seawulfInput[i+1]["district"] = str(districts[(i - 1) % 14])
             
         if seawulfInput[i+1]["dem_votes"] > seawulfInput[i+1]["rep_votes"]:
             seawulfInput[i+1]["voting_history"] = "D"
