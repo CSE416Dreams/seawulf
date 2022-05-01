@@ -2,14 +2,14 @@ from csv import DictReader
 import json
 import operator
 
-csvPath = './shp files/ga_2020/ga_2020.csv'
-adjPath = './shp files/ga_2020/adjList.txt'
+csvPath = './shp files/gaFinal/ga.csv'
+adjPath = './shp files/ga/adjList.json'
 csv = 0
 adj = 0
 seawulfInput = {}
 
 with open(adjPath) as file:
-    adj = file.readlines()
+    adj = json.load(file)
     file.close()
 
 with open(csvPath, 'r') as file:
@@ -17,6 +17,32 @@ with open(csvPath, 'r') as file:
     i = 0
     for row in csv:
         seawulfInput[i + 1] = {}
+        seawulfInput[i + 1]["adjacent_nodes"] = adj[str(i + 1)]
+        '''
+        for candidate, votes in row.items():
+            if candidate == "BIDEN20":
+                seawulfInput[i+1]["dem_votes"] = int(votes)
+            if candidate == "TRUMP20":
+                seawulfInput[i+1]["rep_votes"] = int(votes)
+        '''
+        print(i)
+        seawulfInput[i+1]["dem_votes"] = int(float(row["BIDEN20"]))
+        seawulfInput[i+1]["rep_votes"] = int(float(row["TRUMP20"]))
+        seawulfInput[i+1]["black"]     = int(float(row["BVAP"]))
+        seawulfInput[i+1]["white"]     = int(float(row["WVAP"]))
+        seawulfInput[i+1]["asian"]     = int(float(row["ASIANVAP"]))
+        seawulfInput[i+1]["hispanic"]  = int(float(row["HVAP"]))
+        seawulfInput[i+1]["other"]  = int(row["OTHERVAP"]) + int(row["NHPIVAP"]) + int(row["2MOREVAP"])
+        pop = int(row["BVAP"]) + int(row["WVAP"]) + int(row["ASIANVAP"]) + int(row["HVAP"]) + seawulfInput[i+1]["other"]
+        seawulfInput[i+1]["population"] = pop
+            
+        if seawulfInput[i+1]["dem_votes"] > seawulfInput[i+1]["rep_votes"]:
+            seawulfInput[i+1]["voting_history"] = "D"
+        else:
+            seawulfInput[i+1]["voting_history"] = "R"
+        i += 1
+        
+        '''
         # The following adds the adjacenct Nodes
         adjText = adj[i].strip()
         adjNodes = ""
@@ -40,7 +66,8 @@ with open(csvPath, 'r') as file:
         seawulfInput[i + 1]["rep_votes"] = candidateVotes["G20PRERTRU"]
         seawulfInput[i + 1]["district"] = "To be Assigned"
         i += 1
+        '''
     file.close()
 
-with open('./shp files/ga_2020/ga-seawulf.json', 'w') as f:
+with open('./shp files/gaFinal/ga-seawulf.json', 'w') as f:
     json.dump(seawulfInput, f)

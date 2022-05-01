@@ -1,16 +1,16 @@
 import geopandas as gp
-
-files = ['fl', 'ga', 'ms']
+import json
+files = ['fl']#, 'ga', 'ms']
 
 for i in files:
     fileToWrite = \
-        '/Users/saifulhaque/PycharmProjects/seawulf/precinctNeighbors/shp files/{0}_2020/adjList.txt'.format(i, i)
-    gdf = gp.read_file(
-        '/Users/saifulhaque/PycharmProjects/seawulf/precinctNeighbors/shp files/{0}_2020/{1}_2020.shp'.format(i, i))
+        '/Users/saifulhaque/PycharmProjects/seawulf/precinctNeighbors/shp files/ga/adjList.json'
+    gdf = gp.read_file('/Users/saifulhaque/PycharmProjects/seawulf/precinctNeighbors/shp files/ga/VTD2020-Shape.shp')
     # Add ids to the
     for index, row in gdf.iterrows():
         gdf.at[index, "uID"] = str(index + 1)
-    gdf["geometry"] = gdf.buffer(0)
+    #gdf["geometry"] = gdf.buffer(0)
+    adjList = {}
     with open(fileToWrite, 'w') as file:
         for index, row in gdf.iterrows():
             neighbors = gdf[gdf.geometry.touches(row['geometry'])].uID.tolist()
@@ -19,8 +19,14 @@ for i in files:
                 gdf.at[index, "my_neighbors"] = ", ".join(neighbors)
             except:
                 gdf.at[index, "my_neighbors"] = ", ".join(neighbors)
-            n = ", ".join(neighbors)
-            n = "c(" + n + ")\n"
-            print("Doing {0} precinct {1}".format(i, index))
-            file.write(n)
-    file.close()
+            #n = ", ".join(neighbors)
+            #n = "c(" + n + ")\n"
+            print("Doing precinct {0}".format(index + 1))
+            #print(neighbors)
+            adjList[index + 1] = neighbors
+            #file.write(n)
+        json.dump(adjList, file)
+        file.close()
+
+#with open(fileToWrite, 'w') as file:
+    #
