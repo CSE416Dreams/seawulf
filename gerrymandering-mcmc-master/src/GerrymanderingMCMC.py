@@ -62,11 +62,12 @@ class GerrymanderingMCMC:
             g.nodes[node_label]["population"] = node_data[node_label]["population"]
             g.nodes[node_label]["voting_history"] = node_data[node_label]["voting_history"]
             g.nodes[node_label]["district"] = node_data[node_label]["district"]
-            # The following is commented out because we don't have the data and the decided minorities
-            '''
-            g.nodes[node-label][Minority.AM] = node_data[node_label][Minority.AM]
-            ...
-            '''
+            g.nodes[node_label][Minority.AS] = node_data[node_label][Minority.AS]
+            g.nodes[node_label][Minority.BL] = node_data[node_label][Minority.BL]
+            g.nodes[node_label][Minority.DE] = node_data[node_label][Minority.DE]
+            g.nodes[node_label][Minority.HI] = node_data[node_label][Minority.HI]
+            g.nodes[node_label][Minority.WH] = node_data[node_label][Minority.WH]
+            g.nodes[node_label][Minority.RE] = node_data[node_label][Minority.RE]
             self.all_districts.add(node_data[node_label]["district"])
         fname = "output/original"
         with open(fname, 'w') as file:
@@ -374,16 +375,18 @@ class GerrymanderingMCMC:
         for district in self.all_districts:
             african_count = asian_count = 0
             rep_count = dem_count = 0
-            white_count = 0
+            white_count = hispanic_count = 0
             precinct_nodes = self.__get_district_nodes(graph, district)
             # Each Node is a dict
             # so node["population"] etc.
             for precinct in precinct_nodes:
                 # Get the population
-                african_count += precinct[Minority.AM]
+                african_count += precinct[Minority.BL]
                 asian_count += precinct[Minority.AS]
                 rep_count += precinct[Minority.RE]
                 dem_count += precinct[Minority.DE]
+                white_count += precinct[Minority.WI]
+                hispanic_count += precinct[Minority.HI]
 
             # Republican Democratic Splits
             self.rds.append(i, district, rep_count, dem_count)
@@ -395,10 +398,12 @@ class GerrymanderingMCMC:
                 mm_districts[district] = 0
 
             # Box and Whisker
-            bisect.insort(map_demographics[Minority.AM], african_count)
+            bisect.insort(map_demographics[Minority.BL], african_count)
             bisect.insort(map_demographics[Minority.AS], asian_count)
             bisect.insort(map_demographics[Minority.RE], rep_count)
             bisect.insort(map_demographics[Minority.DE], dem_count)
+            bisect.insort(map_demographics[Minority.WI], white_count)
+            bisect.insort(map_demographics[Minority.HI], hispanic_count)
 
         # MM District
         self.mmd.append(i, mm_districts)

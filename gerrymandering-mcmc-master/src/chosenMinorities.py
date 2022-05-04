@@ -2,9 +2,9 @@ from enum import StrEnum
 
 
 class Minority(StrEnum):
-    AM = "african",
+    BL = "black",
     AS = "asian",
     HI = "hispanic",
-    NA = "native_american",
-    DE = "democratic"
-    RE = "republican"
+    WI = "white",
+    DE = "dem"
+    RE = "rep"
