@@ -1,6 +1,7 @@
 from chosenMinorities import Minority
 import json
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class BWP:
@@ -25,3 +26,13 @@ class BWP:
                         "q1": np.quantile(self.root[minority], .25), "q3": np.quantile(self.root[minority], .75)}
                 json.dump(data, file)
             file.close()
+
+    def plot(self):
+        for minority in self.root:
+            data = []
+            fig = plt.figure(figsize =(20, 20))
+            axes = []
+            for district in self.root[minority]:
+                data.append(self.root[minority][district])
+                axes.append(district)
+            fig.add_axes(axes)

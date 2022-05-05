@@ -354,21 +354,23 @@ class GerrymanderingMCMC:
             # Added code
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
+            '''
             save_after = 1000
             if (i + 1) % save_after:
                 iterations = (i + 1) % save_after
                 self.bwp.calculate_and_save(iterations, self.state)
                 self.rds.save(iterations, self.state)
                 self.mmd.save(iterations, self.state)
-
-        self.__record_key_stats(graph)
+            '''
+        self.bwp.plot()
+        #self.__record_key_stats(graph)
 
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph, i):
         # Save the graph 
         path_to_save = f"{self.state}/graphs/{i}.json"
-        json.dump(path_to_save, graph["nodes"])
+        #json.dump(path_to_save, graph["nodes"])
 
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
         mm_districts = {}
