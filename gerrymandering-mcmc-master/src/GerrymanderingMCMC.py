@@ -26,16 +26,17 @@ class GerrymanderingMCMC:
         against a given potential plan, and use the alternatives to see how much of an outlier the proposed plan is.
     """
 
-    def __init__(self, state, graph_file, cooling_period=50, rounds=50, verbose=False):
+    def __init__(self, proc, state, graph_file, cooling_period=50, rounds=50, verbose=False):
         # We initialize all_districts here, but we really establish it when we read our graph in
         self.all_districts = set()
         self.g = self.read_graph(graph_file)
         self.cooling_period = cooling_period
         self.verbose = verbose
-        self.bwp = BWP(self.all_districts)
-        self.mmd = MMD(self.all_districts)
-        self.rds = RepDemSplits(self.all_districts)
+        self.bwp = BWP(self.all_districts, proc)
+        self.mmd = MMD(self.all_districts, proc)
+        self.rds = RepDemSplits(self.all_districts, proc)
         self.state = state
+        self.porc = proc
         self.district_colors = {
             "A": "red",
             "B": "green",

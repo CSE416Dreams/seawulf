@@ -2,9 +2,10 @@ import json
 
 
 class MMD:
-    def __init__(self, state):
+    def __init__(self, state,proc):
         self.root = {}
         self.state = state
+        self.proc = proc
 
     def append(self, plan_number, plan):
         self.root[plan_number] = plan
@@ -12,12 +13,12 @@ class MMD:
     def save(self, iterations, state):
         start = iterations - 1000
         for i in range(start, iterations):
-            file_path = f"./{state}/mmDistrict-{i}.json"
+            file_path = f"./plans/{state}/{self.proc}/mmDistrict-{i}.json"
             with open(file_path, 'w') as file:
                 json.dump(self.root[i], file)
             file.close()
 
-    def summary(self):
+    def summary(self, path):
         # Count how many districts are mm on average.
         count = 0.0
         minority_win_percent = 0.0
@@ -34,3 +35,7 @@ class MMD:
         st = f"There are on average {avg}  many majority minority districts \
                 in {self.state.upper()}. On average, the mionirty population \
                  is great by {avg_win_percent} %"
+        tor = {"avg mm count": avg, "avg_win_percent": avg_win_percent}
+        with open(path) as f:
+            json.dump(tor,f)
+
