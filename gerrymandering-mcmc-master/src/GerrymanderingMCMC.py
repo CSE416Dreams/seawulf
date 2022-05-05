@@ -36,7 +36,7 @@ class GerrymanderingMCMC:
         self.mmd = MMD(self.all_districts, proc)
         self.rds = RepDemSplits(self.all_districts, proc)
         self.state = state
-        self.porc = proc
+        self.proc = proc
         self.district_colors = {
             "A": "red",
             "B": "green",
@@ -353,17 +353,11 @@ class GerrymanderingMCMC:
             graph = self.recombination_of_districts(i)
 
             # Added code
+            with open(f"./plans/{self.state}/{self.proc}/plans/{i}.json", 'w') as f:
+                json.dump(graph, f)
+                f.close()
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
-            '''
-            save_after = 1000
-            if (i + 1) % save_after:
-                iterations = (i + 1) % save_after
-                self.bwp.calculate_and_save(iterations, self.state)
-                self.rds.save(iterations, self.state)
-                self.mmd.save(iterations, self.state)
-            '''
-        self.bwp.plot()
         #self.__record_key_stats(graph)
 
         print("DONE Finding alternative district plans") if self.verbose else None

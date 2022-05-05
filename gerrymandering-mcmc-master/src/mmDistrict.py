@@ -13,7 +13,7 @@ class MMD:
     def save(self, iterations, state):
         start = iterations - 1000
         for i in range(start, iterations):
-            file_path = f"./plans/{state}/{self.proc}/mmDistrict-{i}.json"
+            file_path = f"./plans/{state}/{self.proc}/mm/mmDistrict-{i}.json"
             with open(file_path, 'w') as file:
                 json.dump(self.root[i], file)
             file.close()
