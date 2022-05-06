@@ -8,12 +8,14 @@ from networkx.algorithms import tree, boundary
 import matplotlib.pyplot as plt
 from functools import reduce
 from networkx.readwrite import json_graph
+import sys
+sys.path.append(".")
 
 # My classes
-from chosenMinorities import Minority
-from boxWhiskerPlot import BWP
-from repdemSplits import RepDemSplits
-from mmDistrict import MMD
+from myf.Minority import Minority
+from myf.BWP import BWP
+from myf.RDS import RDS
+from myf.MMD import MMD
 import os
 
 # Globals we care about
@@ -34,7 +36,7 @@ class GerrymanderingMCMC:
         self.verbose = verbose
         self.bwp = BWP(self.all_districts, proc)
         self.mmd = MMD(self.all_districts, proc)
-        self.rds = RepDemSplits(self.all_districts, proc)
+        self.rds = RDS(self.all_districts, proc)
         self.state = state
         self.proc = proc
         self.district_colors = {

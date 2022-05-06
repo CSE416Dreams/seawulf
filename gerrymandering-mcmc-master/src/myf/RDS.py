@@ -4,7 +4,7 @@ import os
 
 seats = {"ms": 4, "ga": 14, "fl": 28}
 
-class RepDemSplits:
+class RDS:
     def __init__(self, state, proc):
         self.root = {}
         self.state = state
