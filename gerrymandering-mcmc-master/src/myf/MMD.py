@@ -3,7 +3,7 @@ import os
 
 
 class MMD:
-    def __init__(self, state,proc):
+    def __init__(self, state, proc):
         self.root = {}
         self.state = state
         self.proc = proc
@@ -18,7 +18,7 @@ class MMD:
             json.dump(self.root[iteration], f)
             f.close()
 
-    def summary(self, path):
+    def summary(self):
         # Count how many districts are mm on average.
         count = 0.0
         minority_win_percent = 0.0
@@ -36,6 +36,7 @@ class MMD:
                 in {self.state.upper()}. On average, the mionirty population \
                  is great by {avg_win_percent} %"
         tor = {"avg mm count": avg, "avg_win_percent": avg_win_percent}
+        path = f'./plans/{self.state}/mm/{self.proc}/final.json'
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path) as f:
             json.dump(tor,f)

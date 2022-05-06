@@ -5,12 +5,13 @@ import os
 
 
 class BWP:
-    def __init__(self, districts, proc):
+    def __init__(self, districts, proc, state):
         self.root = {"black": {}, "white": {}, "asian": {}, "hispanic":{}, "rep": {}, "dem":{}}
         for minority in self.root:
             for district in districts:
                 self.root[minority][district] = []
         self.proc = proc
+        self.state = state
 
     def append(self, minority, percentages):
         for i in range(len(percentages)):
@@ -27,7 +28,8 @@ class BWP:
                 json.dump(data, file)
             file.close()
 
-    def save(self, path):
+    def save(self):
+        path = f'./plans/{self.state}/bwp/{self.proc}/final.json'
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path) as f:
             json.dump(self.root,f)

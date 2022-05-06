@@ -34,9 +34,9 @@ class GerrymanderingMCMC:
         self.g = self.read_graph(graph_file)
         self.cooling_period = cooling_period
         self.verbose = verbose
-        self.bwp = BWP(self.all_districts, proc)
-        self.mmd = MMD(self.all_districts, proc)
-        self.rds = RDS(self.all_districts, proc)
+        self.bwp = BWP(self.all_districts, proc, state)
+        self.mmd = MMD(state, proc)
+        self.rds = RDS(state, proc)
         self.state = state
         self.proc = proc
         self.district_colors = {
@@ -48,7 +48,7 @@ class GerrymanderingMCMC:
         }
         self.data = []
         self.original_data = {}
-        self.__record_key_stats(self.g, is_original_plan=True)
+        #self.__record_key_stats(self.g, is_original_plan=True)
 
     def read_graph(self, path):
         """
@@ -357,8 +357,8 @@ class GerrymanderingMCMC:
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
         #self.__record_key_stats(graph)
-        self.bwp.save(f'./plans/{self.state}/bwp/{self.proc}/final.json')
-        self.mmd.summary(f'./plans{self.state}/mm/{self.proc}/final.json')
+        self.bwp.save()
+        self.mmd.summary()
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph, i):

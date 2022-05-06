@@ -42,10 +42,10 @@ class RDS:
     def save(self, iteration):
         rseat = dseat = 0
         rvote = dvote = 0
-        for district, split in self.root[iteration]:
-            dvote += split["d"]
-            rvote += split["r"]
-            if split["win"] == "R":
+        for district in self.root[iteration]:
+            dvote += self.root[iteration][district]["d"]
+            rvote += self.root[iteration][district]["r"]
+            if self.root[iteration][district]["win"] == "R":
                 rseat += 1
             else:
                 dseat += 1
