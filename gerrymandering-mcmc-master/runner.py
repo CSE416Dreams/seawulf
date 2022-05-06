@@ -13,11 +13,11 @@ def main():
     parser.add_argument("-s", "--state", type=int, default=4, help="The State for the given plan")
     args = parser.parse_args()
     '''
-    graph_file = ''
+    
     cooling_period = 50
     rounds = 20
     state = sys.argv[1]
-
+    graph_file = f'./{state}.json'
     # Build the gerrymandering MCMC using the variables you've been provided
     mcmc = GerrymanderingMCMC(sys.argv[2], state, graph_file, cooling_period=cooling_period, rounds=rounds)
     # Generate alternative plans
