@@ -40,7 +40,7 @@ class RepDemSplits:
         return
 
     def save(self, iteration):
-        path = f"./{self.state}/rds/{self.proc}/rds-{iteration}.json"
+        path = f"./plans/{self.state}/rds/{self.proc}/rds-{iteration}.json"
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'w') as file:
             json.dump(self.root[iteration], file)
