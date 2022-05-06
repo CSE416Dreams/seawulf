@@ -1,4 +1,5 @@
 from src.GerrymanderingMCMC import GerrymanderingMCMC
+#from src.myf.Minority import Minority
 import sys
 
 default_file = "./src/data/iowa.json"
@@ -14,7 +15,7 @@ def main():
     args = parser.parse_args()
     '''
     
-    cooling_period = 50
+    cooling_period = 100
     rounds = 20
     state = sys.argv[1]
     graph_file = f'./src/{state}.json'

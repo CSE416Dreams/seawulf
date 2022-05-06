@@ -1,4 +1,4 @@
-from chosenMinorities import Minority
+#from myf.Minority import Minority
 import json
 import numpy as np
 import os
@@ -6,17 +6,16 @@ import os
 
 class BWP:
     def __init__(self, districts, proc):
-        self.root = {}
-        for data in Minority:
-            self.root[data.value] = {}
+        self.root = {"black": {}, "white": {}, "asian": {}, "hispanic":{}, "rep": {}, "dem":{}}
+        for minority in self.root:
             for district in districts:
-                self.root[data.value][district] = []
+                self.root[minority][district] = []
         self.proc = proc
 
     def append(self, minority, percentages):
-        for i in range(percentages):
+        for i in range(len(percentages)):
             # bisect.insort(self.root[minority][i], percentages[i])
-            self.root[minority][i].append(percentages[i])
+            self.root[minority][str(i + 1)].append(percentages[i])
 
     def calculate_and_save(self, i, state):
         for minority in self.root:

@@ -11,7 +11,7 @@ class RDS:
         self.proc = proc
 
     def append(self, plan, district, rep, dem):
-        if not self.root[plan]:
+        if not plan in self.root:
             self.root[plan] = {}
         winner = ""
         if rep > dem:

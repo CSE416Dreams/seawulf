@@ -8,15 +8,15 @@ from networkx.algorithms import tree, boundary
 import matplotlib.pyplot as plt
 from functools import reduce
 from networkx.readwrite import json_graph
-import sys
-sys.path.append(".")
+import pickle
 
 # My classes
-from myf.Minority import Minority
-from myf.BWP import BWP
-from myf.RDS import RDS
-from myf.MMD import MMD
+#from src.myf.Minority import Minority
+from src.myf.BWP import BWP
+from src.myf.RDS import RDS
+from src.myf.MMD import MMD
 import os
+from networkx.readwrite import json_graph
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -65,12 +65,12 @@ class GerrymanderingMCMC:
             g.nodes[node_label]["population"] = node_data[node_label]["population"]
             g.nodes[node_label]["voting_history"] = node_data[node_label]["voting_history"]
             g.nodes[node_label]["district"] = node_data[node_label]["district"]
-            g.nodes[node_label][Minority.AS] = node_data[node_label][Minority.AS]
-            g.nodes[node_label][Minority.BL] = node_data[node_label][Minority.BL]
-            g.nodes[node_label][Minority.DE] = node_data[node_label][Minority.DE]
-            g.nodes[node_label][Minority.HI] = node_data[node_label][Minority.HI]
-            g.nodes[node_label][Minority.WH] = node_data[node_label][Minority.WH]
-            g.nodes[node_label][Minority.RE] = node_data[node_label][Minority.RE]
+            g.nodes[node_label]["asian"] = node_data[node_label]["asian"]
+            g.nodes[node_label]["black"] = node_data[node_label]["black"]
+            g.nodes[node_label]["white"] = node_data[node_label]["white"]
+            g.nodes[node_label]["hispanic"] = node_data[node_label]["hispanic"]
+            g.nodes[node_label]["rep"] = node_data[node_label]["rep"]
+            g.nodes[node_label]["dem"] = node_data[node_label]["dem"]
             self.all_districts.add(node_data[node_label]["district"])
         fname = "output/original"
         with open(fname, 'w') as file:
@@ -363,11 +363,14 @@ class GerrymanderingMCMC:
 
     def perform_calculations(self, graph, i):
         # Save the graph 
-        path_to_save = f"./plans/{self.state}/{self.proc}/graphs/{i}.json"
+        print(f'Proc: {self.proc}, Index: {i}')
+        path_to_save = f"./plans/{self.state}/graphs/{self.proc}/graph-{i}.json"
         os.makedirs(os.path.dirname(path_to_save), exist_ok=True)
-        json.dump(path_to_save, graph["nodes"])
+        with open(path_to_save, 'w') as f:
+            json.dump(json_graph.node_link_data(graph), f)
+            f.close()
 
-        map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
+        map_demographics = {"black": [], "asian": [], "rep": [], "dem": [], "white": [], "hispanic":[]}
         mm_districts = {}
         for district in self.all_districts:
             african_count = asian_count = 0
@@ -378,12 +381,12 @@ class GerrymanderingMCMC:
             # so node["population"] etc.
             for precinct in precinct_nodes:
                 # Get the population
-                african_count += precinct[Minority.BL]
-                asian_count += precinct[Minority.AS]
-                rep_count += precinct[Minority.RE]
-                dem_count += precinct[Minority.DE]
-                white_count += precinct[Minority.WI]
-                hispanic_count += precinct[Minority.HI]
+                african_count += self.g.nodes[precinct]["black"]
+                asian_count += self.g.nodes[precinct]["asian"]
+                rep_count += self.g.nodes[precinct]["rep"]
+                dem_count += self.g.nodes[precinct]["dem"]
+                white_count += self.g.nodes[precinct]["white"]
+                hispanic_count += self.g.nodes[precinct]["hispanic"]
 
             # Republican Democratic Splits
             self.rds.append(i, district, rep_count, dem_count)
@@ -395,12 +398,12 @@ class GerrymanderingMCMC:
                 mm_districts[district] = 0
 
             # Box and Whisker
-            bisect.insort(map_demographics[Minority.BL], african_count)
-            bisect.insort(map_demographics[Minority.AS], asian_count)
-            bisect.insort(map_demographics[Minority.RE], rep_count)
-            bisect.insort(map_demographics[Minority.DE], dem_count)
-            bisect.insort(map_demographics[Minority.WI], white_count)
-            bisect.insort(map_demographics[Minority.HI], hispanic_count)
+            bisect.insort(map_demographics["black"], african_count)
+            bisect.insort(map_demographics["asian"], asian_count)
+            bisect.insort(map_demographics["rep"], rep_count)
+            bisect.insort(map_demographics["dem"], dem_count)
+            bisect.insort(map_demographics["white"], white_count)
+            bisect.insort(map_demographics["hispanic"], hispanic_count)
 
         # MM District
         self.mmd.append(i, mm_districts)
