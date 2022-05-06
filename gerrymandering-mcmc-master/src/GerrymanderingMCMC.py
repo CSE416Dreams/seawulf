@@ -14,7 +14,7 @@ from chosenMinorities import Minority
 from boxWhiskerPlot import BWP
 from repdemSplits import RepDemSplits
 from mmDistrict import MMD
-import multiprocessing
+import os
 
 # Globals we care about
 MAX_POP_DIFFERENCE_PERCENTAGE = .05
@@ -359,12 +359,13 @@ class GerrymanderingMCMC:
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
         #self.__record_key_stats(graph)
-
+        self.bwp.save(f'./{self.state}/bwp/{self.proc}/final.json')
+        self.mmd.summary(f'./{self.state}/mm/{self.proc}/final.json')
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph, i):
         # Save the graph 
-        path_to_save = f"{self.state}/graphs/{i}.json"
+        path_to_save = f"./{self.state}/graphs/{i}.json"
         #json.dump(path_to_save, graph["nodes"])
 
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
@@ -389,8 +390,8 @@ class GerrymanderingMCMC:
             self.rds.append(i, district, rep_count, dem_count)
 
             # MM Districts
-            if african_count + asian_count > white_count:
-                mm_districts[district] = 100 * (african_count + asian_count) / (african_count + asian_count + white_count)
+            if african_count + asian_count + hispanic_count > white_count:
+                mm_districts[district] = 100 * (african_count + asian_count + hispanic_count) / (african_count + asian_count + white_count + hispanic_count)
             else:
                 mm_districts[district] = 0
 
@@ -408,3 +409,6 @@ class GerrymanderingMCMC:
         # Append values to the box and whisker plot ds
         for race, values in map_demographics.items():
             self.bwp.append(race, values)
+
+        self.mmd.save(i, self.state)
+        self.rds.save(i)

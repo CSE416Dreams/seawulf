@@ -1,12 +1,14 @@
 import json
+import os
 
 
 seats = {"ms": 4, "ga": 14, "fl": 28}
 
 class RepDemSplits:
-    def __init__(self, state):
+    def __init__(self, state, proc):
         self.root = {}
         self.state = state
+        self.proc = proc
 
     def append(self, plan, district, rep, dem):
         if not self.root[plan]:
@@ -37,10 +39,9 @@ class RepDemSplits:
         # Avg of how many seats a party wins in a plan
         return
 
-    def save(self, iterations):
-        start = iterations - 1000
-        for i in range(start, iterations):
-            file_path = f"./{self.state}/repdemSlpit-{i}.json"
-            with open(file_path, 'w') as file:
-                json.dump(self.root[i], file)
-            file.close()
+    def save(self, iteration):
+        path = f"./{self.state}/rds/{self.proc}/rds-{iteration}.json"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'w') as file:
+            json.dump(self.root[iteration], file)
+        file.close()

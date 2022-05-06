@@ -15,7 +15,7 @@ def main():
     '''
     graph_file = ''
     cooling_period = 50
-    rounds = 250
+    rounds = 20
     state = sys.argv[1]
 
     # Build the gerrymandering MCMC using the variables you've been provided

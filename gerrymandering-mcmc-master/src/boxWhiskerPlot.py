@@ -1,6 +1,7 @@
 from chosenMinorities import Minority
 import json
 import numpy as np
+import os
 
 
 class BWP:
@@ -19,7 +20,7 @@ class BWP:
 
     def calculate_and_save(self, i, state):
         for minority in self.root:
-            path = f"./plans/{state}/{self.proc}/bwp-{i}.json"
+            path = f"./plans/{state}/{self.proc}/bwp-final.json"
             with open(path, 'w') as file:
                 data = {"mean": np.mean(self.root[minority]), "median": np.median(self.root[minority]),
                         "min": self.root[minority][0], "max": self.root[minority][len(self.root[minority]) - 1],
@@ -28,5 +29,6 @@ class BWP:
             file.close()
 
     def save(self, path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path) as f:
             json.dump(self.root,f)
