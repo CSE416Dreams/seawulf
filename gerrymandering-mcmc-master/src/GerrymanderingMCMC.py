@@ -342,7 +342,7 @@ class GerrymanderingMCMC:
 
     def generate_alternative_plans(self, rounds):
         # Run `cooling`-many rounds to randomize the plan a bit
-        self.__drawGraph(self.g, "output/original")
+        #self.__drawGraph(self.g, "output/original")
         for i in range(0, self.cooling_period):
             print("Randomizing the seed plan", i) if i % 25 == 0 and self.verbose else None
             self.recombination_of_districts(i)
@@ -352,21 +352,18 @@ class GerrymanderingMCMC:
             print("Finding recomb ... ", i) if i % 20 == 0 and self.verbose else None
             graph = self.recombination_of_districts(i)
 
-            # Added code
-            with open(f"./plans/{self.state}/{self.proc}/plans/{i}.json", 'w') as f:
-                json.dump(graph, f)
-                f.close()
             self.perform_calculations(graph, i)
             # Save results after every 1000 graphs generated
         #self.__record_key_stats(graph)
-        self.bwp.save(f'./plans{self.state}/bwp/{self.proc}/final.json')
+        self.bwp.save(f'./plans/{self.state}/bwp/{self.proc}/final.json')
         self.mmd.summary(f'./plans{self.state}/mm/{self.proc}/final.json')
         print("DONE Finding alternative district plans") if self.verbose else None
 
     def perform_calculations(self, graph, i):
         # Save the graph 
-        path_to_save = f"./{self.state}/graphs/{i}.json"
-        #json.dump(path_to_save, graph["nodes"])
+        path_to_save = f"./plans/{self.state}/{self.proc}/graphs/{i}.json"
+        os.makedirs(os.path.dirname(path_to_save), exist_ok=True)
+        json.dump(path_to_save, graph["nodes"])
 
         map_demographics = {Minority.AM: [], Minority.AS: [], Minority.RE: [], Minority.DE: []}
         mm_districts = {}

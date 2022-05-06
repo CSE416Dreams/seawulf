@@ -17,7 +17,7 @@ def main():
     cooling_period = 50
     rounds = 20
     state = sys.argv[1]
-    graph_file = f'./{state}.json'
+    graph_file = f'./src/{state}.json'
     # Build the gerrymandering MCMC using the variables you've been provided
     mcmc = GerrymanderingMCMC(sys.argv[2], state, graph_file, cooling_period=cooling_period, rounds=rounds)
     # Generate alternative plans

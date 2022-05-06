@@ -40,8 +40,22 @@ class RepDemSplits:
         return
 
     def save(self, iteration):
+        rseat = dseat = 0
+        rvote = dvote = 0
+        for district, split in self.root[iteration]:
+            dvote += split["d"]
+            rvote += split["r"]
+            if split["win"] == "R":
+                rseat += 1
+            else:
+                dseat += 1
+        tseat = rseat + dseat
+        tvote = rvote + dvote
+        split = {"dseatPer":100*(dseat/tseat), "rseatPer":100*(rseat/tseat),
+                 "dvotePer":100*(dvote/tvote), "rvotePer":100*(rvote/tvote)}
+
         path = f"./plans/{self.state}/rds/{self.proc}/rds-{iteration}.json"
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, 'w') as file:
-            json.dump(self.root[iteration], file)
-        file.close()
+        with open(path, 'w') as f:
+            json.dump(split, f)
+            f.close()
