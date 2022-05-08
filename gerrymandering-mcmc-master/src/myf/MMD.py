@@ -23,13 +23,13 @@ class MMD:
         count = 0.0
         minority_win_percent = 0.0
         for mmd in self.root:
-            for district in mmd:
+            for district in self.root[mmd]:
                 if not self.root[mmd][district] > 0:
                     count += 1
-                    minority_win_percent += mmd[district]
+                    minority_win_percent += self.root[mmd][district]
 
         # Avg of how many districts are mm
-        avg = count / 250
+        avg = count / 10
         avg_win_percent = minority_win_percent / count
 
         st = f"There are on average {avg}  many majority minority districts \
@@ -38,6 +38,6 @@ class MMD:
         tor = {"avg mm count": avg, "avg_win_percent": avg_win_percent}
         path = f'./plans/{self.state}/mm/{self.proc}/final.json'
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path) as f:
+        with open(path, 'w') as f:
             json.dump(tor,f)
 

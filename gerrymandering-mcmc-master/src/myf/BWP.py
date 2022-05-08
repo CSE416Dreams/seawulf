@@ -31,5 +31,5 @@ class BWP:
     def save(self):
         path = f'./plans/{self.state}/bwp/{self.proc}/final.json'
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path) as f:
+        with open(path, 'w') as f:
             json.dump(self.root,f)

@@ -2,8 +2,6 @@ import json
 import os
 
 
-seats = {"ms": 4, "ga": 14, "fl": 28}
-
 class RDS:
     def __init__(self, state, proc):
         self.root = {}
