@@ -22,14 +22,17 @@ class MMD:
         # Count how many districts are mm on average.
         count = 0.0
         minority_win_percent = 0.0
+        district_count = 0
         for mmd in self.root:
+            district_count = len(self.root[mmd])
+
             for district in self.root[mmd]:
-                if not self.root[mmd][district] > 0:
+                if self.root[mmd][district] > 0.0:
                     count += 1
                     minority_win_percent += self.root[mmd][district]
 
         # Avg of how many districts are mm
-        avg = count / 10
+        avg = count / 250
         avg_win_percent = minority_win_percent / count
 
         st = f"There are on average {avg}  many majority minority districts \

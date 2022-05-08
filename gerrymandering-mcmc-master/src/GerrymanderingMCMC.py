@@ -395,7 +395,7 @@ class GerrymanderingMCMC:
             if african_count + asian_count + hispanic_count > white_count:
                 mm_districts[district] = 100 * (african_count + asian_count + hispanic_count) / (african_count + asian_count + white_count + hispanic_count)
             else:
-                mm_districts[district] = 0
+                mm_districts[district] = 0.0
 
             # Box and Whisker
             bisect.insort(map_demographics["black"], african_count)
