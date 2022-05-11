@@ -13,10 +13,13 @@ class BWP:
         self.proc = proc
         self.state = state
 
-    def append(self, minority, percentages):
+    def append(self, minority, percentages, total_pop, total_votes):
+        div = total_pop
+        if minority == "rep" or minority == "dem":
+            div = total_votes
         for i in range(len(percentages)):
             # bisect.insort(self.root[minority][i], percentages[i])
-            self.root[minority][str(i + 1)].append(percentages[i])
+            self.root[minority][str(i + 1)].append(percentages[i] / div)
 
     def calculate_and_save(self, i, state):
         for minority in self.root:

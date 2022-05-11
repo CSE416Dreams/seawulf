@@ -372,6 +372,7 @@ class GerrymanderingMCMC:
 
         map_demographics = {"black": [], "asian": [], "rep": [], "dem": [], "white": [], "hispanic":[]}
         mm_districts = {}
+        total_pop = total_votes = 0
         for district in self.all_districts:
             african_count = asian_count = 0
             rep_count = dem_count = 0
@@ -390,6 +391,8 @@ class GerrymanderingMCMC:
 
             # Republican Democratic Splits
             self.rds.append(i, district, rep_count, dem_count)
+            total_pop += african_count + asian_count + hispanic_count + white_count
+            total_votes += rep_count + dem_count
 
             # MM Districts
             if african_count + asian_count + hispanic_count > white_count:
@@ -410,7 +413,7 @@ class GerrymanderingMCMC:
 
         # Append values to the box and whisker plot ds
         for race, values in map_demographics.items():
-            self.bwp.append(race, values)
+            self.bwp.append(race, values, total_pop, total_votes)
 
         self.mmd.save(i, self.state)
         self.rds.save(i)
